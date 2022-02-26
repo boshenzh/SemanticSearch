@@ -3,8 +3,9 @@
     "name" : "SemanticSearch",
     "description" : "search website including synonyms and semantic similiar sentence",
     "version" : "1.0.0",
-    "author" : "silent way",
+    "author" : "Silent way",
     "action": {
+      "default_icon": "assets/house.png",
       "default_popup": "popup.html"
     },
     "permissions": [
@@ -14,4 +15,3 @@
     "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self'"
     }
 }
-
