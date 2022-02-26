@@ -15,21 +15,39 @@
             <h2 id="title">
                 Semantic Search</span>
             </h2>
-
+            
+                
+              
             <div class="ui action input">
+                <div class="ui icon input">
                 <input type="text" placeholder="Search..." id="search-for">
+                <i class="circular search link icon" id ="search"></i>
+                </div>
                 <select class="ui compact selection dropdown" id="search-format" >
                   <option selected="" value="plaintext">Text</option>
                   <option value="image">Image</option>
                   <option value="video">Video</option>
                 </select>
-                <div class="ui button" id="search">Search</div>
+                
+                <!-- <div class="ui button" id="search">Search</div> -->
               </div>
+            <p id="caption">searching on:  <span id="link" style="color: #2185d0;"></span></p>
+
         </div>
+        <div class="ui list" id ="link-list">
+            
+          </div>
+          
         
     </div>
-    
-    <script type="text/javascript" src="popup.js"></script>
+    <template id="video-link">
+        <div class="item">
+            <div class="content">
+              <a href="http://www.semantic-ui.com">sample</a>
+            </div>
+        </div>
+    </template>
+    <script type="module" src="popup.js"></script>
 </body>
     
 
