@@ -1,0 +1,17 @@
+{
+    "manifest_version" : 3,
+    "name" : "SemanticSearch",
+    "description" : "search website including synonyms and semantic similiar sentence",
+    "version" : "1.0.0",
+    "author" : "silent way",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "permissions": [
+        "activeTab"
+     ],
+    "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self'"
+    }
+}
+
