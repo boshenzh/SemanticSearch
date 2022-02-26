@@ -3,7 +3,7 @@
     "name" : "SemanticSearch",
     "description" : "search website including synonyms and semantic similiar sentence",
     "version" : "1.0.0",
-    "author" : "Silent way",
+    "author" : "silent way",
     "action": {
       "default_icon": "assets/house.png",
       "default_popup": "popup.html"

@@ -12,14 +12,21 @@
     <br>
     <div class="ui grid container">
         <div class="sixteen wide center aligned column">
-          <h3 id="title">Semantic Search</h3>
-          <p id="caption">What do you want search for </p>
+            <h2 id="title">
+                Semantic Search</span>
+            </h2>
+
+            <div class="ui action input">
+                <input type="text" placeholder="Search..." id="search-for">
+                <select class="ui compact selection dropdown" id="search-format" >
+                  <option selected="" value="plaintext">Text</option>
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                </select>
+                <div class="ui button" id="search">Search</div>
+              </div>
         </div>
         
-        <!-- create an input tag with id="URL" that should take in an URL -->
-        <div class="sixteen wide center align column">
-            <input type="text" id="input-text">
-        </div>
     </div>
     
     <script type="text/javascript" src="popup.js"></script>
