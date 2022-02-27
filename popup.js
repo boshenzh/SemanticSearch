@@ -13,7 +13,6 @@ var totalSearchnum = 0;
 let currentTab = (
     await chrome.tabs.query({ active: true, currentWindow: true })
 )[0];
-inject();
 document.getElementById("search-format").onchange = function () {
     videoPlatformCheck();
 };
