@@ -4,6 +4,8 @@ let idList;
 let getContentList;
 let intervalT;
 let intervalV;
+let intervalLoading;
+let intervalStatus;
 let searchedImg = new Array();
 let videoStatus;
 //suppose video time found is 3s,790s,5h3s
@@ -33,7 +35,6 @@ var nextButton = document.getElementById("next");
 nextButton.addEventListener("click", nextEntry);
 var prevButton = document.getElementById("prev");
 prevButton.addEventListener("click", prevEntry);
-totalSearchnum
 function nextEntry() {
     if (currentSearchId < totalSearchnum) {
         currentSearchId += 1;
@@ -69,11 +70,12 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
         srcList = Array.from(new Set(res[0]));
         idList = new Array();
         //const imgList = srcList.map((src) => `<img src="${src}" />`).join('');
-        for(let i =0;i<srcList.length;i++){
-            imageURL(srcList[i], i, "png");
+        if(srcList.length != 0){
+            for(let i =0;i<srcList.length;i++){
+                imageURL(srcList[i], i, "png");
+            }
+            intervalT=setInterval(getContentListFromServer,1000);
         }
-        intervalT=setInterval(getContentListFromServer,1000);
-
         //document.getElementById('app').innerHTML = imgList;
     });
 });
@@ -121,7 +123,16 @@ function videoPlatformCheck(){
   }
 
 }
-
+if(!videoStatus.includes("Done")){
+    $("#search-for").prop('disabled', true);
+    document.getElementById("search").style.pointerEvents = "none";
+    intervalStatus=setInterval(statusCheck,1000);
+}
+function statusCheck(){
+    if(videoStatus.includes("Done")){
+        clearInterval(intervalStatus);
+    }
+}
 $('#search').on('click', async () => {
     var list = document.getElementById('link-list');
     list.innerHTML = "";
@@ -135,34 +146,41 @@ $('#search').on('click', async () => {
     } else if (format == "image") {
         const textList = [searchfor];
         //console.log(textList)
-        searchImage(textList, searchedImg);
+        searchImage(textList, getContentList);
         totalSearchnum = searchedImg.length;
-    } else if (format == "video") {
-        if(!videoStatus.includes("Done")){
-            $("#search-for").prop('disabled', true);
-            document.getElementById("search").style.pointerEvents = "none";
+        if(totalSearchnum == 0){
+            intervalLoading=setInterval(loadingCheck,1000);
         }
         else{
+            document.getElementById("search-box").className = "ui icon input";
+        }
+        for(let i = 0; i< searchedImg.length; i++){
+            console.log(srcList[searchedImg[i]]);
+        }
+    } else if (format == "video") {
             $("#search-for").prop('disabled', false);
             document.getElementById("search").style.pointerEvents = "auto";
+            document.getElementById("search-box").className = "ui icon input";
             const textList = [searchfor];
             const url = currentTab.url;
             await searchedVideoDuration(url, textList);
             console.log("vOnclick: "+videoStamp.length);
             totalSearchnum = videoStamp.length;
-            if (videoStamp.length == 0) {
+
+            if (totalSearchnum.length == 0) {
                 console.log("should load");
                 //document.getElementById("searchbox").classList.add('loading');
                 console.log(document.getElementById("search-box").className);
-                document.getElementById("search-box").className =
-                    "ui left icon input loading";
+                //document.getElementById("search-box").className =
+                    //"ui left icon input loading";
 
                 // $("#search-for").prop('loading', true);
                 // $("#search").prop('disabled', true);
+                intervalLoading=setInterval(loadingCheck,1000);
             } else {
                 document.getElementById("search-box").className = "ui icon input";
 
-                for (var j = 0; j < videoStamp.length; j++) {
+                for (var j = 0; j < videoStamp.length; j+2) {
                     var item = document.createElement("div");
                     item.class = "item";
                     list = document.getElementById("link-list");
@@ -174,7 +192,8 @@ $('#search').on('click', async () => {
                     var aTag = document.createElement("a");
                     console.log(videoStamp[j]);
 
-                    aTag.innerText = convertTimeFormat(videoStamp[j]);
+                    var timeDuration = convertTimeFormat(videoStamp[j]) + "-" + convertTimeFormat(videoStamp[j+1])
+                    aTag.innerText = timeDuration;
                     aTag.id = videoStamp[j];
                     // alert(aTag.id);
 
@@ -195,7 +214,6 @@ $('#search').on('click', async () => {
                     content.appendChild(aTag);
                 }
             }
-        }
     }
 });
 
@@ -315,6 +333,16 @@ async function searchedVideoDuration(videoUrl, keywords){
         });
     })
 
+}
+function loadingCheck(){
+    if(totalSearchnum == 0){
+        document.getElementById("search-box").className =
+            "ui left icon input loading";
+    }
+    else{
+        document.getElementById("search-box").className = "ui icon input";
+        clearInterval(intervalLoading);
+    }
 }
 var getLocation = function (href) {
     var l = document.createElement("a");
