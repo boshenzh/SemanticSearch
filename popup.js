@@ -8,11 +8,11 @@ let searchedImg;
 const videoStamp = [5,86,3000,12312];
 var href = "";
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
+
 inject();
 document.getElementById('search-format').onchange = function() {
   videoPlatformCheck();
 }
-
 
 chrome.tabs.query({ active: true, currentWindow: true },  (tabArray) =>{
     const url = tabArray[0].url;
@@ -25,7 +25,11 @@ chrome.tabs.query({ active: true, currentWindow: true },  (tabArray) =>{
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     let message = { start: true };
     chrome.tabs.sendMessage(tab.id, message, (res) => {
-        srcList = Array.from(new Set(res));
+      console.log(res)
+        if(res[1] == null){
+          inject()
+        }
+        srcList = Array.from(new Set(res[0]));
         idList = new Array();
         searchedImg = new Array();
         const imgList = srcList.map((src) => `<img src="${src}" />`).join('');
@@ -219,7 +223,7 @@ function inject(){
     chrome.scripting.executeScript(
         {
             target:{tabId:currentTab.id},
-            files:["video.js"]
+            files:["video.js", "inject.js"]
         }
     )
 

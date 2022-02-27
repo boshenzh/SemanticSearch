@@ -4,6 +4,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (start) {
         const images = document.getElementsByTagName('img');
         const imgSrcList = Array.from(images).map((img) => img.src);
-        sendResponse(imgSrcList);
+        const injected = document.getElementById("SSearch-already-injected")
+        sendResponse([imgSrcList, injected]);
     }
 });
