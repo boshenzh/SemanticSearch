@@ -44,7 +44,10 @@ function prevEntry() {
     }
         const displayc = currentSearchId+1;
 
-        document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+        if(totalSearchnum !=0){
+            document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+
+        }
 
     
 
