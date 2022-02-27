@@ -17,11 +17,18 @@
             </h2>
 
             <div class="ui action input">
-                <div class="ui icon input">
+                <div class="ui icon input" id="search-box">
                     <input type="text" placeholder="Search..." id="search-for">
                     <i class="circular search link icon" id="search"></i>
                   </div>
+                  <button class="ui icon button" id="prev">
+                    <i class="chevron left icon"></i>
+                  </button>
+                  <button class="ui icon button" id="next">
+                    <i class="chevron right icon"></i>
+                  </button>
                   
+                                    
                 
                 <select class="ui compact selection dropdown" id="search-format" >
                   <option selected="" value="plaintext">Text</option>
@@ -32,6 +39,8 @@
                 <!-- <div class="ui button" id="search">Search</div> -->
             </div>
             <p id="caption">searching on:  <span id="link" style="color: #2185d0;"></span></p>
+            <p id="entry">0/0</p>
+
 
         </div>
         <div class ="sixteen wide center aligned column">
