@@ -7,7 +7,7 @@ let intervalV;
 let intervalLoading;
 let intervalStatus;
 let searchedImg = new Array();
-let videoStatus;
+let videoStatus = "";
 //suppose video time found is 3s,790s,5h3s
 let videoStamp;
 let ytVideoUrl;
@@ -15,7 +15,11 @@ var href = "";
 var currentSearchId = 0;
 var totalSearchnum = 0;
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-
+var getLocation = function (href) {
+    var l = document.createElement("a");
+    l.href = href;
+    return l;
+};
 document.getElementById('search-format').onchange = function() {
   videoPlatformCheck();
 }
@@ -42,7 +46,7 @@ function nextEntry() {
     }
 
     const displayc = currentSearchId;
-    document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+   //document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
 
 
 }
@@ -54,7 +58,7 @@ function prevEntry() {
     const displayc = currentSearchId+1;
 
     if(totalSearchnum !=0){
-        document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+       // document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
 
     }
 
@@ -94,13 +98,24 @@ function videoPlatformCheck(){
     console.log(hostname);
 
   if($('#search-format').val() =="video"){
+    document.getElementById("prev").style.visibility = "hidden";
+    document.getElementById("next").style.visibility = "hidden";
     if (hostname == "www.youtube.com"){
+        intervalStatus=setInterval(statusCheck,500);
+        if(videoStatus.includes("Error") || videoStatus.includes("Not")){
+            clearInterval(intervalStatus);
+            document.getElementById("search-box").className = "ui icon input";
+            $("#search-for").prop('disabled', true);
+            document.getElementById("search").style.pointerEvents = "none";
+            $("#error").text(videoStatus + ". Error happened when processing this video");
+        }
+        else{
         document.getElementById("search").style.pointerEvents = "auto";
       $("#search-for").prop('disabled', false);
     //   $("#search").toggleClass("disabled");
       $("#error").text("");
       console.log("yes");
-
+    }
     }
     else{
       $("#search-for").prop('disabled', true);
@@ -115,6 +130,8 @@ function videoPlatformCheck(){
 
   }
   else{
+    document.getElementById("prev").style.visibility = "visible";
+    document.getElementById("next").style.visibility = "visible";
     $("#search-for").prop('disabled', false);
     //   $("#search").prop('disabled', false);
       //var icon = document.getElementById("search");
@@ -125,14 +142,16 @@ function videoPlatformCheck(){
   }
 
 }
-if(!videoStatus.includes("Done")){
-    $("#search-for").prop('disabled', true);
-    document.getElementById("search").style.pointerEvents = "none";
-    intervalStatus=setInterval(statusCheck,1000);
-}
+
+
 function statusCheck(){
-    if(videoStatus.includes("Done")){
+    if($('#search-format').val()=="video" && !videoStatus.includes("Done")){
+        document.getElementById("search-box").className = "ui left icon input loading";
+        
+    }
+    else{
         clearInterval(intervalStatus);
+        document.getElementById("search-box").className = "ui icon input";
     }
 }
 $('#search').on('click', async () => {
@@ -150,19 +169,17 @@ $('#search').on('click', async () => {
         //searchText(searchfor);
     } else if (format == "image") {
         const textList = [searchfor];
-        //console.log(textList)
+        console.log(textList[0])
         searchImage(textList, getContentList);
         totalSearchnum = searchedImg.length;
-        if(totalSearchnum == 0){
-            intervalLoading=setInterval(loadingCheck,1000);
-        }
-        else{
-            document.getElementById("search-box").className = "ui icon input";
-        }
+        let temp = []
         for(let i = 0; i< searchedImg.length; i++){
             console.log(srcList[searchedImg[i]]);
+            temp.push(srcList[searchedImg[i]])
         }
+        chrome.tabs.sendMessage(currentTab.id, {"type": "img", "data": temp})
     } else if (format == "video") {
+        
             $("#search-for").prop('disabled', false);
             document.getElementById("search").style.pointerEvents = "auto";
             document.getElementById("search-box").className = "ui icon input";
@@ -185,7 +202,7 @@ $('#search').on('click', async () => {
             } else {
                 document.getElementById("search-box").className = "ui icon input";
 
-                for (var j = 0; j < videoStamp.length; j+2) {
+                for (var j = 0; j < videoStamp.length; j+=2) {
                     var item = document.createElement("div");
                     item.class = "item";
                     list = document.getElementById("link-list");
@@ -311,7 +328,7 @@ function getDurationListFromServer(){
             }
             else if (status.includes("Error")){
                 clearInterval(intervalV);
-                videoStatus = "Something Error Happened";
+                videoStatus = status;
                 console.log("Error");
             }
             else{
@@ -322,7 +339,7 @@ function getDurationListFromServer(){
     });
 }
 async function searchedVideoDuration(videoUrl, keywords){
-    new Promise(resolve =>{
+    return new Promise(resolve =>{
         $.ajax({
             type: "POST",
             url: "http://34.86.216.171/video/search",
@@ -332,7 +349,7 @@ async function searchedVideoDuration(videoUrl, keywords){
                 videoStamp = times;
                 console.log("success get keywords");
                 console.log("searchVideo: "+videoStamp.length);
-                resolve()
+                resolve("finished")
 
             }
         });
@@ -349,11 +366,6 @@ function loadingCheck(){
         clearInterval(intervalLoading);
     }
 }
-var getLocation = function (href) {
-    var l = document.createElement("a");
-    l.href = href;
-    return l;
-};
 function timeStampClicked(){
     console.log("clicked");
     var text;

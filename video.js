@@ -1,6 +1,6 @@
 // $.getScript('//www.youtube.com/iframe_api');
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-  if(message["currentTime"] == null){
+  if(message["time"] == null){
     return
   }
     console.log(message.time);

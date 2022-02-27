@@ -28,7 +28,8 @@
       ],
       "js": [
         "content-script.js"
-      ]
+      ],
+      "css":["inject.css"]
     }
   ]
 }

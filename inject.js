@@ -7,6 +7,11 @@ let injection = document.createElement("div")
 var counter = 0;
 var current = 0;
 var results = [];
+
+var currentMode = 0;
+
+var imgCurr = 0;
+var imgs = []
 function getAllElement(){
     res = [];
     let body = document.body;
@@ -29,10 +34,12 @@ function clearHighlight(){
 }
 
 async function highlight(strs, sendResponse){
+    currentMode = 0;
     if(strs == null){
         return
     }
     if(strs == ""){
+        clearImgHighlight()
         clearHighlight()
         return
     }
@@ -42,13 +49,13 @@ async function highlight(strs, sendResponse){
         let str = strs[i]
         strs.push(str[0].toUpperCase()+str.slice(1))
     }
+    clearImgHighlight()
     clearHighlight()
     let elements = getAllElement();
     for(let i =0; i < elements.length; i++){
         searchR(elements[i], strs)
     }
     results = document.getElementsByClassName("SSearch-highlight")
-    console.log(total)
     current = 0;
     if(results.length > 0){
        results[0].classList.add("SSearch-highlight-current")
@@ -118,8 +125,7 @@ function highLightFactory(str){
     return res
 }
 
-function next(){
-    console.log(current)
+function txtNext(){
     results[current].classList.remove("SSearch-highlight-current")
     if (current == results.length -1){
         current = -1
@@ -129,8 +135,7 @@ function next(){
     window.scrollTo(0, results[current].offsetTop - 300)
 }
 
-function prev(){
-    console.log(current)
+function txtPrev(){
     results[current].classList.remove("SSearch-highlight-current")
     if (current == 0){
         current = results.length
@@ -140,21 +145,97 @@ function prev(){
     window.scrollTo(0, results[current].offsetTop - 300)
 }
 
+function clearImgHighlight(){
+    let temp = document.getElementsByClassName("SSearch-img-highlight")
+    while(temp.length > 0){
+        temp[0].classList.remove("SSearch-img-highlight")
+    }
+    temp = document.getElementsByClassName("SSearch-img-highlight-current")
+    while(temp.length > 0){
+        temp[0].classList.remove("SSearch-img-highlight-current")
+    }
+}
+
+function searchImgs(urls){
+    currentMode = 1;
+    clearHighlight()
+    clearImgHighlight()
+    let temp = document.getElementsByTagName("img");
+    for(let i = 0; i < temp.length; i++){
+        if(urls.includes(temp[i].src)){
+            temp[i].classList.add("SSearch-img-highlight")
+            imgs.push(temp[i]);
+        }
+    }
+    //console.log(imgs)
+    if(imgs.length > 0){
+        console.log(imgs)
+        imgCurr = 0;
+        imgs[0].classList.remove("SSearch-img-highlight")
+        imgs[0].classList.add("SSearch-img-highlight-current")
+        imgs[0].scrollIntoView({block:"center", inline: "center"})
+    }
+
+
+}
+
+function imgNext(){
+    console.log(imgCurr)
+    console.log(imgs[imgCurr])
+    imgs[imgCurr].classList.remove("SSearch-img-highlight-current")
+    imgs[imgCurr].classList.add("SSearch-img-highlight")
+    if(imgCurr == imgs.length-1){
+        imgCurr = -1;
+    }
+    imgCurr++;
+    console.log(imgs[imgCurr].offsetTop)
+    imgs[imgCurr].classList.remove("SSearch-img-highlight")
+    imgs[imgCurr].classList.add("SSearch-img-highlight-current")
+    imgs[imgCurr].scrollIntoView({block:"center", inline: "center"})
+    window.scrollTo
+}
+
+function imgPrev(){
+    imgs[imgCurr].classList.remove("SSearch-img-highlight-current")
+    imgs[imgCurr].classList.add("SSearch-img-highlight")
+    if(imgCurr == 0){
+        imgCurr = imgs.length;
+    }
+    imgCurr--;
+    imgs[imgCurr].classList.remove("SSearch-img-highlight")
+    imgs[imgCurr].classList.add("SSearch-img-highlight-current")
+    imgs[imgCurr].scrollIntoView({block:"center", inline: "center"})
+}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse)=> {
     if(request["search-for"]){
         highlight(request["search-for"], sendResponse)
     }
     else if(request["jump"] == "prev"){
-        prev();
+        if(currentMode == 0){
+            txtPrev();
+        }  
+        else{
+            imgPrev();
+        } 
+        
     }
     else if(request["jump"] == "next"){
-        next();
+        if(currentMode == 0){
+            txtNext();
+        }
+        else{
+            imgNext();
+        }
+        
+    }
+    else if (request["type"] == "img" ){
+        console.log(request["data"])
+        searchImgs(request["data"])
     }
     
 
 })
-
 
 
 

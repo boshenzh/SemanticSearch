@@ -1,3 +1,11 @@
 .SSearch-highlight-current{
     background-color: chartreuse;
 }
+
+.SSearch-img-highlight-current{
+    border: 20px solid green 
+}
+
+.SSearch-img-highlight{
+    border: 20px solid yellow
+}
