@@ -14,7 +14,6 @@ var currentSearchId = 0;
 var totalSearchnum = 0;
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
 
-inject();
 document.getElementById('search-format').onchange = function() {
   videoPlatformCheck();
 }
@@ -30,6 +29,35 @@ chrome.tabs.query({ active: true, currentWindow: true },  (tabArray) =>{
     }
     document.getElementById("link").textContent = hostname;
 });
+var nextButton = document.getElementById("next");
+nextButton.addEventListener("click", nextEntry);
+var prevButton = document.getElementById("prev");
+prevButton.addEventListener("click", prevEntry);
+totalSearchnum
+function nextEntry() {
+    if (currentSearchId < totalSearchnum) {
+        currentSearchId += 1;
+    }
+
+    const displayc = currentSearchId;
+    document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+
+
+}
+function prevEntry() {
+    if (currentSearchId > 0) {
+        currentSearchId -= 1;
+    }
+    const displayc = currentSearchId+1;
+
+    if(totalSearchnum !=0){
+        document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
+
+    }
+
+
+
+}
 
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     let message = { start: true };
@@ -108,6 +136,7 @@ $('#search').on('click', async () => {
         const textList = [searchfor];
         //console.log(textList)
         searchImage(textList, searchedImg);
+        totalSearchnum = searchedImg.length;
     } else if (format == "video") {
         if(!videoStatus.includes("Done")){
             $("#search-for").prop('disabled', true);
@@ -120,38 +149,51 @@ $('#search').on('click', async () => {
             const url = currentTab.url;
             await searchedVideoDuration(url, textList);
             console.log("vOnclick: "+videoStamp.length);
-            for (var j = 0; j < videoStamp.length; j++) {
-                var item = document.createElement('div');
-                item.class = "item";
-                list = document.getElementById('link-list');
-                list.appendChild(item);
-                var content = document.createElement('div');
-                content.class = "content";
-                item.appendChild(content);
+            totalSearchnum = videoStamp.length;
+            if (videoStamp.length == 0) {
+                console.log("should load");
+                //document.getElementById("searchbox").classList.add('loading');
+                console.log(document.getElementById("search-box").className);
+                document.getElementById("search-box").className =
+                    "ui left icon input loading";
 
-                var aTag = document.createElement('a');
-                console.log(videoStamp[j]);
+                // $("#search-for").prop('loading', true);
+                // $("#search").prop('disabled', true);
+            } else {
+                document.getElementById("search-box").className = "ui icon input";
 
-                aTag.innerText = convertTimeFormat(videoStamp[j]);
-                aTag.id = videoStamp[j];
-                // alert(aTag.id);
+                for (var j = 0; j < videoStamp.length; j++) {
+                    var item = document.createElement("div");
+                    item.class = "item";
+                    list = document.getElementById("link-list");
+                    list.appendChild(item);
+                    var content = document.createElement("div");
+                    content.class = "content";
+                    item.appendChild(content);
 
-                const onClick = (event) => {
-                    console.log(event.target.id);
-                    chrome.tabs.sendMessage(currentTab.id, {time: event.target.id});
+                    var aTag = document.createElement("a");
+                    console.log(videoStamp[j]);
 
+                    aTag.innerText = convertTimeFormat(videoStamp[j]);
+                    aTag.id = videoStamp[j];
+                    // alert(aTag.id);
+
+                    const onClick = (event) => {
+                        console.log(event.target.id);
+                        chrome.tabs.sendMessage(currentTab.id, { time: event.target.id });
+                    };
+                    aTag.addEventListener("click", onClick);
+
+                    // window.addEventListener('click', onClick);
+
+                    // aTag.onclick = timeStampClicked(aTag.id)
+                    // function(aid = aTag.id) {
+                    //   // put your click handling code here
+                    //   // return(false) if you don't want default click behavior for the link
+
+                    // }
+                    content.appendChild(aTag);
                 }
-                aTag.addEventListener("click", onClick);
-
-                // window.addEventListener('click', onClick);
-
-                // aTag.onclick = timeStampClicked(aTag.id)
-                // function(aid = aTag.id) {
-                //   // put your click handling code here
-                //   // return(false) if you don't want default click behavior for the link
-
-                // }
-                content.appendChild(aTag);
             }
         }
     }
