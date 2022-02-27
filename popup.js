@@ -50,7 +50,8 @@ function videoPlatformCheck(){
 
   if($('#search-format').val() =="video"){
     if (hostname == "www.youtube.com"){
-      $("#search-for").prop('disabled', false);
+        document.getElementById("search").style.pointerEvents = "auto";
+      $("#search-for").pointerEvents('disabled', false);
     //   $("#search").toggleClass("disabled");
       $("#error").text("");
       console.log("yes");
@@ -58,10 +59,10 @@ function videoPlatformCheck(){
     }
     else{
       $("#search-for").prop('disabled', true);
-      $("#search").toggleClass("disabled");
-      var icon = document.getElementById("search");
-      icon.disabled = true;
-
+      //$("#search").toggleClass("disabled");
+     // var icon = document.getElementById("search");
+      //icon.disabled = true;
+        document.getElementById("search").style.pointerEvents = "none";
       $("#error").text("this function is only available for Youtube now");
       console.log("no");
 
@@ -71,8 +72,9 @@ function videoPlatformCheck(){
   else{
     $("#search-for").prop('disabled', false);
     //   $("#search").prop('disabled', false);
-      var icon = document.getElementById("search");
-      icon.disabled = false;
+      //var icon = document.getElementById("search");
+      //icon.disabled = false;
+      document.getElementById("search").style.pointerEvents = "auto";
       $("#error").text("");
       console.log("yes");
   }
