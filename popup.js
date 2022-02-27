@@ -9,12 +9,15 @@ const videoStamp = [5,86,3000,12312];
 var href = "";
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
 inject();
-
-chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-    const url = tab[0].url;
+chrome.tabs.query({ active: true, currentWindow: true },  (tabArray) =>{
+    const url = tabArray[0].url;
     href = getLocation(url).pathname + getLocation(url).search;
     const hostname = getLocation(url).hostname; // we're interested in host related data
     document.getElementById("link").textContent = hostname;
+
+});
+
+chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     let message = { start: true };
     chrome.tabs.sendMessage(tab.id, message, (res) => {
         srcList = Array.from(new Set(res));
@@ -104,8 +107,8 @@ function getBase64(url, filename, fileType, callback) {
         canvas.height = 224;
         canvas.getContext("2d").drawImage(image, 0, 0, 224, 224);
         dataURL = canvas.toDataURL('image/' + fileType);
-        if (width < 128 || height < 128) {
-            console.log("too small");
+        if (width < 64 || height < 64) {
+            console.log("pic too small");
         }
         else {
             //console.log("id: " + filename + "; " + dataURL.split(',')[1]);
