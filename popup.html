@@ -17,7 +17,12 @@
             </h2>
 
             <div class="ui action input">
-                <input type="text" placeholder="Search..." id="search-for">
+                <div class="ui icon input">
+                    <input type="text" placeholder="Search..." id="search-for">
+                    <i class="circular search link icon" id="search"></i>
+                  </div>
+                  
+                
                 <select class="ui compact selection dropdown" id="search-format" >
                   <option selected="" value="plaintext">Text</option>
                   <option value="image">Image</option>
@@ -28,6 +33,9 @@
             </div>
             <p id="caption">searching on:  <span id="link" style="color: #2185d0;"></span></p>
 
+        </div>
+        <div class ="sixteen wide center aligned column">
+             <span id="error" style="color: #d02121;"></span></p>
         </div>
         <div class="ui list" id ="link-list">
 
