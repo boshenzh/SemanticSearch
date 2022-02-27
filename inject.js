@@ -59,7 +59,7 @@ async function highlight(strs, sendResponse){
     current = 0;
     if(results.length > 0){
        results[0].classList.add("SSearch-highlight-current")
-       window.scrollTo(0, results[0].offsetTop - 300)
+       results[0].scrollIntoView({block:"center", inline: "center"})
     }
     sendResponse([document.getElementsByClassName("SSearch-highlight").length])
 }
@@ -132,7 +132,7 @@ function txtNext(){
     }
     current++;
     results[current].classList.add("SSearch-highlight-current")
-    window.scrollTo(0, results[current].offsetTop - 300)
+    results[current].scrollIntoView({block:"center", inline: "center"})
 }
 
 function txtPrev(){
@@ -142,7 +142,7 @@ function txtPrev(){
     }
     current--;
     results[current].classList.add("SSearch-highlight-current")
-    window.scrollTo(0, results[current].offsetTop - 300)
+    results[current].scrollIntoView({block:"center", inline: "center"})
 }
 
 function clearImgHighlight(){
@@ -192,7 +192,6 @@ function imgNext(){
     imgs[imgCurr].classList.remove("SSearch-img-highlight")
     imgs[imgCurr].classList.add("SSearch-img-highlight-current")
     imgs[imgCurr].scrollIntoView({block:"center", inline: "center"})
-    window.scrollTo
 }
 
 function imgPrev(){
