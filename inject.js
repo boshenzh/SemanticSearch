@@ -5,6 +5,8 @@ let injection = document.createElement("div")
   document.body.appendChild(injection)
 
 var counter = 0;
+var current = 0;
+var results = [];
 function getAllElement(){
     res = [];
     let body = document.body;
@@ -45,7 +47,13 @@ async function highlight(strs, sendResponse){
     for(let i =0; i < elements.length; i++){
         searchR(elements[i], strs)
     }
-    console.log(document.getElementsByClassName("SSearch-highlight").length)
+    results = document.getElementsByClassName("SSearch-highlight")
+    console.log(total)
+    current = 0;
+    if(results.length > 0){
+       results[0].classList.add("SSearch-highlight-current")
+       window.scrollTo(0, results[0].offsetTop - 300)
+    }
     sendResponse([document.getElementsByClassName("SSearch-highlight").length])
 }
 
@@ -72,10 +80,10 @@ function findAndReplace(elem, strs){
     if(elem.innerText == null || elem.innerText == ""){
         return;
     }
+    //console.log(elem)
     for (let i = 0; i < strs.length; i++){
         //elem.innerText.replace(strs[i], '<mark class="SSearch-highlight">' + strs[i]+'</mark>')
         let splited = elem.innerText.split(strs[i])
-        
         if(splited.length >1){
             elem.innerText = "";
             elem.append(splited[0])
@@ -109,8 +117,41 @@ function highLightFactory(str){
     counter++;
     return res
 }
+
+function next(){
+    console.log(current)
+    results[current].classList.remove("SSearch-highlight-current")
+    if (current == results.length -1){
+        current = -1
+    }
+    current++;
+    results[current].classList.add("SSearch-highlight-current")
+    window.scrollTo(0, results[current].offsetTop - 300)
+}
+
+function prev(){
+    console.log(current)
+    results[current].classList.remove("SSearch-highlight-current")
+    if (current == 0){
+        current = results.length
+    }
+    current--;
+    results[current].classList.add("SSearch-highlight-current")
+    window.scrollTo(0, results[current].offsetTop - 300)
+}
+
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse)=> {
-    highlight(request["search-for"], sendResponse)
+    if(request["search-for"]){
+        highlight(request["search-for"], sendResponse)
+    }
+    else if(request["jump"] == "prev"){
+        prev();
+    }
+    else if(request["jump"] == "next"){
+        next();
+    }
+    
 
 })
 

@@ -22,16 +22,13 @@ var getLocation = function (href) {
     return l;
 };
 
-<<<<<<< HEAD
-document.getElementById('search-format').onchange = function() {
-  videoPlatformCheck();
-=======
 var nextButton = document.getElementById("next");
 nextButton.addEventListener("click", nextEntry);
 var prevButton = document.getElementById("prev");
 prevButton.addEventListener("click", prevEntry);
 totalSearchnum
 function nextEntry() {
+    chrome.tabs.sendMessage(currentTab.id,{"jump":"next"})
     if (currentSearchId < totalSearchnum) {
         currentSearchId += 1;
     }
@@ -40,9 +37,9 @@ function nextEntry() {
         document.getElementById("entry").innerHTML = displayc + "/" + totalSearchnum;
 
     
->>>>>>> 21ec0a4d426ed555890d5cee19123b043d6636ae
 }
 function prevEntry() {
+    chrome.tabs.sendMessage(currentTab.id,{"jump":"prev"})
     if (currentSearchId > 0) {
         currentSearchId -= 1;
     }
