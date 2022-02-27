@@ -6,7 +6,7 @@ Before this hackathon, all of us did not have any knowledge of chrome extension 
 
 ## How we built our project
 Backend: we used google cloud to host our website, PyTorch for machine learning.
-Frontend: we used semantic UI ([link](https://semantic-ui.com/)) as a framework to create the user interface. Jquery([link](https://https://jquery.com//))  was used as an external library as we wanted to manipulate DOM as we use the chrome extension. We also utilized RapidAPI to get similar words and therefore to search.
+Frontend: we used semantic UI ([link](https://semantic-ui.com/)) as a framework to create the user interface. Jquery([link](https://https://jquery.com//))  was used as an external library as we wanted to manipulate DOM as we use the chrome extension. We also utilized RapidAPI([link](https://rapidapi.com/Graydyn/api/synonyms/to))  get similar words and therefore to search.
 
 ## Challenge
 One of the challenges during the development is time management. Since our application is required to use a trained machine learning model for recognizing images and videos, we were not able to train a suitable and efficient model specifically for this project. because of this, the search was not 100% accurate when searching with images and videos. Moreover, we were not familiar with APIs related to the chrome extension since this is our first time developing the chrome extension. We had to spend some time studying the infrastructure of the chrome extension.
