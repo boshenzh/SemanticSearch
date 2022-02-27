@@ -8,7 +8,12 @@ let searchedImg;
 const videoStamp = [5,86,3000,12312];
 var href = "";
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
-//inject();
+
+inject();
+document.getElementById('search-format').onchange = function() {
+  videoPlatformCheck();
+}
+
 chrome.tabs.query({ active: true, currentWindow: true },  (tabArray) =>{
     const url = tabArray[0].url;
     href = getLocation(url).pathname + getLocation(url).search;
@@ -37,6 +42,49 @@ chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     });
 });
 
+function videoPlatformCheck(){
+  console.log("here");
+  console.log($('#search-format').val());
+
+    //get hostname information
+    const url = currentTab.url;
+    href = getLocation(url).pathname + getLocation(url).search;
+    const hostname = getLocation(url).hostname; // we're interested in host related data
+    console.log(hostname);
+
+  if($('#search-format').val() =="video"){
+    if (hostname == "www.youtube.com"){
+        document.getElementById("search").style.pointerEvents = "auto";
+      $("#search-for").pointerEvents('disabled', false);
+    //   $("#search").toggleClass("disabled");
+      $("#error").text("");
+      console.log("yes");
+
+    }
+    else{
+      $("#search-for").prop('disabled', true);
+      //$("#search").toggleClass("disabled");
+     // var icon = document.getElementById("search");
+      //icon.disabled = true;
+        document.getElementById("search").style.pointerEvents = "none";
+      $("#error").text("this function is only available for Youtube now");
+      console.log("no");
+
+    }
+
+  }
+  else{
+    $("#search-for").prop('disabled', false);
+    //   $("#search").prop('disabled', false);
+      //var icon = document.getElementById("search");
+      //icon.disabled = false;
+      document.getElementById("search").style.pointerEvents = "auto";
+      $("#error").text("");
+      console.log("yes");
+  }
+
+}
+
 $('#search').on('click', () => {
     var list = document.getElementById('link-list');
     list.innerHTML = "";
@@ -44,6 +92,7 @@ $('#search').on('click', () => {
     console.log("searchfor: " + searchfor);
     var format = $('#search-format').val();
     console.log("in format: " + format);
+
     if (format == "plaintext") {
         //searchText(searchfor);
     }
@@ -51,9 +100,10 @@ $('#search').on('click', () => {
 
     }
     else if(format == "video"){
+        
 
 
-        for(var j = 0; j<videoStamp.length;j++){
+          for(var j = 0; j<videoStamp.length;j++){
             var item = document.createElement( 'div' );
             item.class = "item";
             list = document.getElementById('link-list');
@@ -88,6 +138,9 @@ $('#search').on('click', () => {
 
 
         }
+        
+        
+        
 
 
     }
