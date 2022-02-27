@@ -9,7 +9,6 @@ const videoStamp = [5,86,3000,12312];
 var href = "";
 let currentTab = (await chrome.tabs.query({active: true, currentWindow: true}))[0];
 
-inject();
 document.getElementById('search-format').onchange = function() {
   videoPlatformCheck();
 }
@@ -94,6 +93,9 @@ $('#search').on('click', () => {
     console.log("in format: " + format);
 
     if (format == "plaintext") {
+      chrome.tabs.sendMessage(currentTab.id,{"search-for": searchfor}, (res)=>{
+        console.log(res)
+      });
         //searchText(searchfor);
     }
     else if(format =="image"){
