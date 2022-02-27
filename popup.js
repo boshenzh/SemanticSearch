@@ -105,8 +105,8 @@ $('#search').on('click', async () => {
     if (format == "plaintext") {
         //searchText(searchfor);
     } else if (format == "image") {
-        const textList = await search(searchfor);
-        //console.log(textList);
+        const textList = [searchfor];
+        //console.log(textList)
         searchImage(textList, searchedImg);
     } else if (format == "video") {
         if(!videoStatus.includes("Done")){
@@ -116,7 +116,7 @@ $('#search').on('click', async () => {
         else{
             $("#search-for").prop('disabled', false);
             document.getElementById("search").style.pointerEvents = "auto";
-            const textList = await search(searchfor);
+            const textList = [searchfor];
             const url = currentTab.url;
             await searchedVideoDuration(url, textList);
             console.log("vOnclick: "+videoStamp.length);
