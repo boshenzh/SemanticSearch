@@ -7,12 +7,13 @@ let injection = document.createElement("div")
 function getAllElement(){
     res = [];
     let body = document.body;
-    for (let i = 0; i < body.childNodes.length; i++){
+    for (let i = 0; i < body.children.length; i++){
         let child = body.children[i];
         if(child != null && child.tagName.toLocaleLowerCase() != "style" && child.tagName.toLocaleLowerCase() != "script"){
             res.push(child)
         }
     }
+    //console.log(res)
     return res
 }
 
@@ -31,33 +32,64 @@ function highlight(strs){
 }
 
 function searchR(element, strs){
-    if(element == null || element.tagName.toLocaleLowerCase() == "style" || element.tagName.toLocaleLowerCase() == "script"){
+    if(element == null || element.tagName.toLocaleLowerCase() == "style" || 
+        element.tagName.toLocaleLowerCase() == "script" ||
+        element.tagName.toLocaleLowerCase() == "noscript"){
         return
     }
-    if(element.childNodes.length == 0){
-        console.log(element)
+    if(element.children.length == 0 || element.children == null){
+        //console.log(element)
         findAndReplace(element, strs);
         return
     }
-    for (var i = 0; i < element.childNodes.length; i++){
-        searchR(element.children[i])
+    for (var i = 0; i < element.children.length; i++){
+        searchR(element.children[i], strs)
     }
+    //findAndReplace(element, strs)
 
 }
 
 
 function findAndReplace(elem, strs){
-    console.log(elem)
-    if(elem.innerText == ""){
+    if(elem.innerText == null || elem.innerText == ""){
         return;
     }
-    for(let i = 0; i < strs.length; i++){
-         if(elem.innerText.includes(strs[i])){
-             replace(elem, strs[i])
-         }
+    for (let i = 0; i < strs.length; i++){
+        //elem.innerText.replace(strs[i], '<mark class="SSearch-highlight">' + strs[i]+'</mark>')
+        let splited = elem.innerText.split(strs[i])
+        
+        if(splited.length >1){
+            elem.innerText = "";
+            elem.append(splited[0])
+            for (let u = 1; u < splited.length; u++){
+                elem.append(highLightFactory(strs[i]))
+                elem.append(splited[u])
+            }
+        }
     }
+    //console.log(elem.innerText)
+
+    //console.log(elem)
+    // let words = elem.childNodes;
+    // //console.log(words)
+    // for(let u = 0; u < words.length; u++){
+    //     for(let i = 0; i < strs.length; i++){
+    //         console.log(words[u])
+    //          if(words[u].toString().includes(strs[i])){
+    //              //replace(elem, strs[i])
+    //          }
+    //     }
+    // }
+    
 }
-chrome.runtime.onMessage.addListener((msg)=> highlight(msg))
+
+function highLightFactory(str){
+    let res = document.createElement("mark")
+    res.innerText = str
+    res.className = "SSearch-highlight"
+    return res
+}
+chrome.runtime.onMessage.addListener((msg)=> highlight(["JS"]))
 
 
 
